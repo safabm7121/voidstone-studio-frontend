@@ -1,0 +1,128 @@
+/* ========== CORE ANIMATIONS ========== */
+
+/* Fade + Slide-in with Blur */
+.fade-blur {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(10px);
+  transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
+}
+
+.fade-blur.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* Backdrop Blur + Motion */
+.blur-card {
+  background: rgba(var(--color-background-rgb, 255, 255, 255), 0.2);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+[data-theme="dark"] .blur-card {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.blur-card.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Card Entrance Animation */
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.product-card-entrance {
+  animation: cardEntrance 0.5s ease-out forwards;
+}
+
+/* Staggered animation delays */
+.product-card-entrance:nth-child(3n+1) {
+  animation-delay: 0.1s;
+}
+
+.product-card-entrance:nth-child(3n+2) {
+  animation-delay: 0.2s;
+}
+
+.product-card-entrance:nth-child(3n+3) {
+  animation-delay: 0.3s;
+}
+
+/* Fade animations */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.empty-state h5 {
+  margin-bottom: 1rem;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .empty-state {
+    padding: 2rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .empty-state {
+    padding: 1.5rem 0;
+  }
+}
