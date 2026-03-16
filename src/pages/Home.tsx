@@ -77,7 +77,7 @@ const Home: React.FC = () => {
       setLoading(true);
       const response = await productApi.get('/products');
       const products = response.data.products || response.data || [];
-      // Safely slice the array
+      // Safe check before slicing
       setFeaturedProducts(Array.isArray(products) ? products.slice(0, 6) : []);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -106,6 +106,15 @@ const Home: React.FC = () => {
   };
 
   const mediaUrl = getMediaUrl();
+
+  // Show loading state
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <CircularProgress size={60} thickness={4} />
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -204,7 +213,7 @@ const Home: React.FC = () => {
           featuredProducts && featuredProducts.length > 0 ? (
             <ThreeDCarousel products={featuredProducts} />
           ) : (
-            <Typography variant="body1" sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="body1" sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
               No featured products available
             </Typography>
           )
