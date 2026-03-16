@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   AppBar, Toolbar, Typography, Button, Box,
   IconButton, Menu, MenuItem, Avatar, Drawer, List,
@@ -36,22 +36,10 @@ const Navbar: React.FC = () => {
   // Refs for menu anchoring
   const userMenuAnchorRef = useRef<HTMLDivElement>(null);
   const langMenuAnchorRef = useRef<HTMLButtonElement>(null);
-  const menuButtonRef = useRef<HTMLButtonElement>(null); // 🎯 Added for focus management
   
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  // 🎯 FIX: Handle focus when drawer closes
-  useEffect(() => {
-    if (!mobileOpen && menuButtonRef.current) {
-      // Small delay to ensure drawer is fully closed
-      const timer = setTimeout(() => {
-        menuButtonRef.current?.focus();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [mobileOpen]);
 
   const handleUserMenuOpen = () => {
     setUserMenuOpen(true);
@@ -78,10 +66,6 @@ const Navbar: React.FC = () => {
     logout();
     navigate('/login');
     handleUserMenuClose();
-  };
-
-  const handleDrawerClose = () => {
-    setMobileOpen(false);
   };
 
   const menuItems = [
@@ -126,13 +110,7 @@ const Navbar: React.FC = () => {
 
   const drawer = (
     <Box
-      onClick={handleDrawerClose}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          handleDrawerClose();
-        }
-      }}
-      role="presentation"
+      onClick={() => setMobileOpen(false)}
       sx={{
         width: { xs: '85vw', sm: 280 },
         maxWidth: 280,
@@ -150,7 +128,6 @@ const Navbar: React.FC = () => {
             key={item.text} 
             component={Link} 
             to={item.path} 
-            onClick={handleDrawerClose}
             sx={{ 
               color: 'text.primary',
               '&:hover': {
@@ -171,7 +148,6 @@ const Navbar: React.FC = () => {
             <ListItem 
               component={Link} 
               to="/book-appointment" 
-              onClick={handleDrawerClose}
               sx={{ 
                 color: 'text.primary',
                 '&:hover': { bgcolor: 'action.hover' }
@@ -185,7 +161,6 @@ const Navbar: React.FC = () => {
             <ListItem 
               component={Link} 
               to="/appointments" 
-              onClick={handleDrawerClose}
               sx={{ 
                 color: 'text.primary',
                 '&:hover': { bgcolor: 'action.hover' }
@@ -207,7 +182,6 @@ const Navbar: React.FC = () => {
             <ListItem 
               component={Link} 
               to="/admin/appointments" 
-              onClick={handleDrawerClose}
               sx={{ 
                 color: 'text.primary',
                 '&:hover': { bgcolor: 'action.hover' }
@@ -221,7 +195,6 @@ const Navbar: React.FC = () => {
             <ListItem 
               component={Link} 
               to="/create-product" 
-              onClick={handleDrawerClose}
               sx={{ 
                 color: 'text.primary',
                 '&:hover': { bgcolor: 'action.hover' }
@@ -264,9 +237,7 @@ const Navbar: React.FC = () => {
               minWidth: { xs: 'auto', sm: 140, md: 160 },
             }}>
               <IconButton
-                ref={menuButtonRef} // 🎯 Added ref for focus management
                 color="inherit"
-                aria-label="menu" // 🎯 Added aria-label
                 onClick={() => setMobileOpen(!mobileOpen)}
                 sx={{ 
                   display: { lg: 'none' }, 
@@ -625,7 +596,7 @@ const Navbar: React.FC = () => {
       <Drawer
         anchor={isRtl ? 'right' : 'left'}
         open={mobileOpen}
-        onClose={handleDrawerClose}
+        onClose={() => setMobileOpen(false)}
         sx={{
           display: { xs: 'block', lg: 'none' },
           '& .MuiDrawer-paper': {
