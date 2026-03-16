@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
+import { authApi } from '../services/api'; // Import the configured axios instance
 
 interface User {
   id: string;
@@ -39,24 +39,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
 
-  const api = axios.create({
-    baseURL: 'http://localhost:3001/api',
-  });
-
-  // Add token to requests
-  api.interceptors.request.use((config) => {
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
+  // Use the imported authApi instead of creating a new one
+  const api = authApi;
 
   // Fetch user profile
   const fetchUserProfile = async () => {
     if (!token) return null;
     
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get('/api/auth/me');
       return response.data.user;
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -101,7 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/api/auth/login', { email, password });
       const { token: newToken, user: userData } = response.data;
       
       localStorage.setItem('token', newToken);
@@ -124,7 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (userData: any) => {
     try {
-      const response = await api.post('/auth/register', userData);
+      const response = await api.post('/api/auth/register', userData);
       toast.success('Registration successful! Please check your email for verification code.');
       
       // Store email for verification page
@@ -140,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const verifyEmail = async (email: string, code: string) => {
     try {
-      await api.post('/auth/verify-email', { email, code });
+      await api.post('/api/auth/verify-email', { email, code });
       toast.success('Email verified successfully! You can now login.');
       localStorage.removeItem('pendingVerification');
     } catch (error: any) {

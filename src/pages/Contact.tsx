@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import axios from 'axios';
+import { authApi } from '../services/api'; // Import the configured API
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 const Contact: React.FC = () => {
@@ -24,13 +24,12 @@ const Contact: React.FC = () => {
     setError('');
     
     try {
-      // Send email using your auth-service
-      await axios.post('http://localhost:3001/api/contact/send', {
-        name: formData.name,
-        email: formData.email,
-        message: formData.message
-      });
-      
+      // Use authApi instead of direct axios - this will handle the baseURL correctly
+     await authApi.post('/api/contact/send', {
+  name: formData.name,
+  email: formData.email,
+  message: formData.message
+});
       setSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setSubmitted(false), 5000);
