@@ -11,7 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Product } from '../../types';
 import { formatCurrency } from '../../utils/helpers';
 import '../../styles/animation.css';
-import '../../styles/product-card.css'; // Import the new CSS file
+import '../../styles/product-card.css'; 
 import { useTranslation } from 'react-i18next';
 
 interface ProductCardProps {
@@ -136,12 +136,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <Typography
               variant="subtitle1"
               className="product-card-title"
+              noWrap // Ensure single line
             >
               {product.name}
             </Typography>
             <Typography
               variant="body2"
               className="product-card-description"
+              noWrap // Ensure single line
             >
               {product.description}
             </Typography>
