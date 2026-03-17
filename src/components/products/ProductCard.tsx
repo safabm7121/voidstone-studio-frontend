@@ -10,8 +10,8 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { Product } from '../../types';
 import { formatCurrency } from '../../utils/helpers';
-import '../../styles/animation.css'; // keep your existing animation
-import '../../styles/product-card.css'; // Add this import
+import '../../styles/animation.css';
+import '../../styles/product-card.css'; // Import the new CSS file
 import { useTranslation } from 'react-i18next';
 
 interface ProductCardProps {
@@ -74,13 +74,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const { main, sub } = splitCategory(product.category || '');
+  const isRtl = document.dir === 'rtl';
 
   return (
-    <div ref={elementRef} className={`fade-blur product-card-wrapper ${isVisible ? 'visible' : ''}`}>
-      <Card className="product-card" elevation={0}>
+    <div ref={elementRef} className={`fade-blur ${isVisible ? 'visible' : ''} product-card-wrapper`}>
+      <Card className="product-card">
         {/* Admin actions – positioned according to direction */}
         {isAdmin && (
-          <Box className={`product-card-admin-actions ${document.dir === 'ltr' ? 'ltr' : 'rtl'}`}>
+          <Box className={`product-card-admin-actions ${isRtl ? 'rtl' : 'ltr'}`}>
             <Tooltip title="View History">
               <IconButton
                 size="small"
@@ -117,18 +118,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
         >
           {/* Image container */}
           <Box className="product-card-image-container">
-          {product.images?.length ? (
-  <Box
-    component="img"
-    src={product.images?.[0] || ''}
-    alt={product.name}
-    className="product-card-image"
-  />
-) : (
-  <Box className="product-card-no-image">
-    No image
-  </Box>
-)}
+            {product.images?.length ? (
+              <Box
+                component="img"
+                src={product.images[0]}
+                alt={product.name}
+                className="product-card-image"
+              />
+            ) : (
+              <Box className="product-card-no-image">
+                No image
+              </Box>
+            )}
           </Box>
 
           <CardContent className="product-card-content">
@@ -164,15 +165,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </Box>
             )}
 
-            <Typography className="product-card-price">
+            <Typography variant="h6" className="product-card-price">
               {formatCurrency(product.price)}
             </Typography>
 
             {/* Tags – justified based on direction */}
             {product.tags?.length > 0 && (
-              <Box
-                className={`product-card-tags ${document.dir === 'ltr' ? 'ltr' : 'rtl'}`}
-              >
+              <Box className={`product-card-tags ${isRtl ? 'rtl' : 'ltr'}`}>
                 {product.tags.slice(0, 3).map(tag => (
                   <Chip
                     key={tag}
@@ -202,17 +201,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
             View Details
           </Button>
           <Box className="product-card-spacer" />
-          <Tooltip title={!isAuthenticated ? 'Login to add' : 'Add to cart'}>
-            <span>
-              <IconButton
-                onClick={handleAddToCart}
-                disabled={!isAuthenticated}
-                className="product-card-add-to-cart-btn"
-              >
-                <AddShoppingCartIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
+          <IconButton
+            onClick={handleAddToCart}
+            disabled={!isAuthenticated}
+            className="product-card-add-to-cart-btn"
+            title={!isAuthenticated ? 'Login to add' : 'Add to cart'}
+          >
+            <AddShoppingCartIcon />
+          </IconButton>
         </CardActions>
       </Card>
     </div>
